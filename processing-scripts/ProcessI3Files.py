@@ -15,7 +15,6 @@
 from utils import event, particle, recodata
 from utils import keytools
 
-import pickle
 
 from I3Tray import *
 from icecube import icetray, dataio, phys_services, dataclasses
@@ -77,6 +76,9 @@ class CrunchFiles(icetray.I3Module):
 
     mcParticle = self.ConvertParticle(primary)
 
+    if mcParticle.dir.zenith > 45 * 3.141592653 / 180.:
+      return False
+
 
     evt = event.Event()
     evt.SetPrimary(mcParticle)
@@ -135,9 +137,15 @@ class CrunchFiles(icetray.I3Module):
 
   def Finish(self):
     log_info("Making output file {} with {} events".format(str(args.output), len(self.eventList)))
+    import pickle
     file = open(args.output, "wb")
     pickle.dump(self.eventList, file)
     file.close()
+
+
+#Filter for the usual analysis
+def ITStdFilter(frame):
+    return (‘IT73AnalysisIceTopQualityCuts’ in frame and all(frame[“IT73AnalysisIceTopQualityCuts”].values()))
 
 
 tray = I3Tray()
@@ -148,6 +156,8 @@ tray.Add('I3Reader', 'TheReader',
 # tray.AddModule("I3NullSplitter","splitter",
 #                SubEventStreamName="DumpEvent"
 #                )
+
+tray.AddModule(ITStdFilter, "Filter", streams=[icetray.I3Frame.Physics])
 
 tray.AddModule(CrunchFiles, "Processor",
                # PulseNames=["OfflineIceTopSLCTankPulses", icetop_globals.icetop_HLCseed_clean_hlc_pulses])

@@ -66,7 +66,7 @@ class Particle(object):
       self.pos = Position(pos)
 
   def GetPosition(self):
-    return pos
+    return self.pos
 
 
   def SetEnergy(self, eng):

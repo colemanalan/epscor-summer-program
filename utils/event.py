@@ -30,6 +30,9 @@ class Event(object):
 
     return string
 
+  def keys(self):
+    return self.tankHits.keys()
+
   def AddHit(self, key, time, amp):
     self.tankHits[key] = (amp, time)
 

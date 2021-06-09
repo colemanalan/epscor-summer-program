@@ -1,5 +1,7 @@
 #!/bin/env python3
 
+#./GCDConverter.py /cvmfs/icecube.opensciencegrid.org/data/GCD/GeoCalibDetectorStatus_2012.icesim3.i3.gz
+
 from utils.geometry import Position, Geometry
 from utils import keytools
 
@@ -7,6 +9,7 @@ import pickle
 
 from I3Tray import *
 from icecube import icetray, dataio, dataclasses
+from icecube.icetray.i3logging import log_fatal, log_info
 icetray.I3Logger.global_logger.set_level(icetray.I3LogLevel.LOG_INFO)
 
 import argparse
@@ -24,14 +27,19 @@ class ConvertGCD(icetray.I3Module):
 
   def Geometry(self, frame):
     omgeo = frame["I3Geometry"].omgeo
+    stationgeo = frame["I3Geometry"].stationgeo
 
-    for key in omgeo.keys():
-      if not (61 <= key.om <= 64):
-        continue 
+    for stnkey in stationgeo.keys():
 
-      newkey = keytools.GetKeyFromTankKey(key)
+      for tank in stationgeo[stnkey]:
+        omList = tank.omkey_list
 
-      self.geom.AddPosition(newkey, Position(omgeo[key].position))
+        for omkey in omList:
+          newkey = keytools.GetKeyFromTankKey(omkey)
+
+          self.geom.AddPosition(newkey, Position(omgeo[omkey].position))
+          self.geom.AddSnowHeight(newkey, tank.snowheight)
+
 
   def Finish(self):
     log_info("Making output file {} with {} OMs".format(str(args.output), len(self.geom)))

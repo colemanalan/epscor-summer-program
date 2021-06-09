@@ -22,7 +22,6 @@ class Position(object):
       self.location[1] = pos[1]
       self.location[2] = pos[2]
 
-
   def __str__(self):
     return "({0:0.2f}, {1:0.2f}, {2:0.2f})".format(self.location[0],self.location[1],self.location[2])
 
@@ -40,15 +39,32 @@ class Position(object):
     self.location -= other.location
     return self
 
+  def Magnitude(self):
+    return np.sqrt(sum(self.location**2))
+
 
 class Geometry(object):
   """Class which contains the layout of the detectors"""
   def __init__(self):
     self.positions = {}
+    self.snowHeight = {}
+
+  def __len__(self):
+    return len(self.positions)
+
+  def __call__(self, key):
+    return self.positions[key], self.snowHeight[key]
 
   def AddPosition(self, key, pos):
     if isinstance(pos, Position):
       self.positions[key] = pos
     else:
       self.positions[key] = Position(pos)
+
+    if not key in self.snowHeight:
+      self.snowHeight[key] = 0.
+
+
+  def AddSnowHeight(self, key, height):
+    self.snowHeight[key] = height
     

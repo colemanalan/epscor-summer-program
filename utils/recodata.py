@@ -61,4 +61,7 @@ class RecoData(object):
     self.ldfSlope = x
 
   def GetLDFSlope(self):
-    return ldfSlope
+    return self.ldfSlope
+
+  def GetReconstructionStatus(self):
+    return self.status
