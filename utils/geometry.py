@@ -64,7 +64,12 @@ class Geometry(object):
     if not key in self.snowHeight:
       self.snowHeight[key] = 0.
 
+  def GetPosition(self, key):
+    return self.positions[key]
 
   def AddSnowHeight(self, key, height):
     self.snowHeight[key] = height
+
+  def GetSnowHeight(self, key):
+    return self.snowHeight[key]
     

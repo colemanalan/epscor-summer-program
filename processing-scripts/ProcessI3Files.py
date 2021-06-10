@@ -29,6 +29,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument('input', type=str, nargs='+', default=[], help='Input data files.')
 parser.add_argument('--gcd', type=str, default="/cvmfs/icecube.opensciencegrid.org/data/GCD/GeoCalibDetectorStatus_IC86_Merged.i3.gz", help='GCD file for the event')
 parser.add_argument('--output', type=str, required=True, default="", help='Output pickle file')
+parser.add_argument('--nEvents', type=str,  default=10000, help='Number of events to read')
+parser.add_argument('--maxzen', type=str,  default=45, help='Maximum angle in deg')
 args = parser.parse_args()
 
 
@@ -74,10 +76,10 @@ class CrunchFiles(icetray.I3Module):
     else:
       log_fatal("I could not find a valid primary")
 
-    mcParticle = self.ConvertParticle(primary)
-
-    if mcParticle.dir.zenith > 45 * 3.141592653 / 180.:
+    if primary.dir.zenith > args.maxzen * 3.141592653 / 180.:
       return False
+
+    mcParticle = self.ConvertParticle(primary)
 
 
     evt = event.Event()
@@ -128,7 +130,7 @@ class CrunchFiles(icetray.I3Module):
 
     self.eventList.append(evt)
 
-    if len(self.eventList) == 10000:
+    if len(self.eventList) == args.nEvents:
       self.RequestSuspension()
 
     # print(evt)
@@ -145,17 +147,13 @@ class CrunchFiles(icetray.I3Module):
 
 #Filter for the usual analysis
 def ITStdFilter(frame):
-    return (‘IT73AnalysisIceTopQualityCuts’ in frame and all(frame[“IT73AnalysisIceTopQualityCuts”].values()))
+    return ('IT73AnalysisIceTopQualityCuts' in frame and all(frame["IT73AnalysisIceTopQualityCuts"].values()))
 
 
 tray = I3Tray()
 tray.Add('I3Reader', 'TheReader',
           FilenameList = [args.gcd] + args.input
         )
-
-# tray.AddModule("I3NullSplitter","splitter",
-#                SubEventStreamName="DumpEvent"
-#                )
 
 tray.AddModule(ITStdFilter, "Filter", streams=[icetray.I3Frame.Physics])
 

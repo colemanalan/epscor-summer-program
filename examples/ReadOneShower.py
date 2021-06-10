@@ -36,9 +36,8 @@ for key in event.keys():
   print("    Key:", key)
   print("    Amplitude: {0:0.2f} VEM".format(event.GetSignalAmp(key)))
   print("    Time: {0:0.1f} ns".format(event.GetSignalTime(key)))
-  pos, snowHeight = detectorLocations(key)
-  print("    Detector location:", pos)
-  print("    Snow height above detector: {0:0.2f} m".format(snowHeight))
+  print("    Detector location:", detectorLocations.GetPosition(key))
+  print("    Snow height above detector: {0:0.2f} m".format(detectorLocations.GetSnowHeight(key)))
   print("")
 
 
