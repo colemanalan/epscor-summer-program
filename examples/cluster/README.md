@@ -1,6 +1,6 @@
-#Using Bash and the Madison Cluster
+# Using Bash and the Madison Cluster
 
-##Logging into the Cluster
+## Logging into the Cluster
 To access the Madison cluster (also known as the Cobalts and/or NPX), you will need an LDAP account. To get one, do the following:
 
 1. You can request one by writing an email to help@icecube.wisc.edu and include your local PI in cc. 
@@ -10,11 +10,11 @@ To access the Madison cluster (also known as the Cobalts and/or NPX), you will n
 5. The step above will only connect you to the _login_ node. To start doing work (and to be able to access all IC files), next run `ssh cobalt`. This will put you on one of the Cobalt nodes which are used for, short, interactive work.
 
 
-##Using Bash
+## Using Bash
 Bash is one of the most common languages to use when you are interacting with a terminal.
 The Madison cluster, by default uses bash.
 
-###Useful Bash Commands
+### Useful Bash Commands
 Here are a few useful bash commands to get you started:
 
 * `cd <directory>` - moves to the specified directory. Using `..` for the `<directory>` will move you up one dir, using `~` will bring you to your home directory.
@@ -34,10 +34,10 @@ Here are a few useful bash commands to get you started:
 * `source <Bash Script>` - Runs a bash script
 * `which <program>` - Prints the location of a program to the terminal
 
-##Location of Things on the Cluster
+## Location of Things on the Cluster
 When you first login to the Madison cluster, you will be in your _home_ directory `/home/yourname`. You can check this by running `pwd`.
 
-###Your Data Directory
+### Your Data Directory
 Your home directory is the only directory which is backed up. However, it is not very big, mainly, you will be working in your _data_ directory. This is located at `/data/user/yourname`. You can go there by running `cd /data/user/yourname`.
 
 __Recommendation:__ Since you will typically be going to your _data_ directory, you can create a shortcut to it in your home directory. Go to your home directory by running `cd ~` (note that `~` is the bash shortcut to your home directory). 
@@ -46,7 +46,7 @@ This will make a _symbolic_ (thus the `-s`) link to your _data_ dir and call the
 
 Your data directory has a maximum limit of 2TB. This is a lot, but if you ever hit that limit, you will have problems! You can check to see how you are doing compared to your limit by running `lfs quota -hg $(whoami) /data/user/$(whoami)`.
 
-###IceTop Simulations
+### IceTop Simulations
 The icetop simulations are very computationally expensive to run.
 So typically, you will not simulate them yourself and will instead just use the ones which we all share.
 You can find them in:
@@ -78,12 +78,12 @@ The subdirectories match those of the CORSIKA simulations above.
 ##Setting up your Environment and Standard Software
 It will be important to set up your bash _environment_ so that you can more easily run scripts and so that you do not have to install so many programs yourself. 
 
-###CVMFS
+### CVMFS
 Eventually, you will almost certainly be running some python scripts, so you can load up (almost) everything you need by running ``eval  `/cvmfs/icecube.opensciencegrid.org/py3-v4.1.1/setup.sh` ``. (You can also just try to use the most recent one by checking for the latest version using `ls /cvmfs/icecube.opensciencegrid.org/py3*` and using the highest number.)
 
 Once you do this, you can check to make sure it worked by running `which python`. It should print out something like `/cvmfs/icecube.opensciencegrid.org/py3-v4.1.1/RHEL_7_x86_64/bin/python` instead of the default `/usr/bin/python`.
 
 Not only does this make a version of python (and various python libraries) available to you, but it also includes things like C++ compilers and C++ libraries available as well. This suite of programs extends to what is useful/required to run IceTray, so there is no guarantee that _everything_ that you need will be there.
 
-###IceTray
+### IceTray
 You may also need to load up some variables if you intend to use the IceTray analysis framework. Likely, you will have installed your own installation of IceTray somewhere. Go to your _build_ directory and run `./env-shell.sh`. It should print a little logo and tell which which version of python it found. For more, see the IceTray example scripts.
