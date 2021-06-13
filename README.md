@@ -20,6 +20,12 @@ To run the examples, you will need to first download the .obj files. This can be
 
 ---
 
+## Using Bash and the Madison Cluster
+
+There are some short tutorials on how to use bash and login to the cluster. For more information, see the README in `./examples/cluster`.
+
+---
+
 ## Machine Learning
 
 Examples of how to train machine learning networks. Note that you will need to have the example data sets downloaded (see above)
