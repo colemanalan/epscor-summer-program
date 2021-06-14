@@ -2,7 +2,6 @@
 
 #This example shows the way to add a filter to reject events based on the contents
 #of the frames. 
-#There is a Q-Frame filter which rejects frames based on the MC energy.
 #There is a P-Frame filter which rejects based on the reconstructed zenith angle
 #You will need to be in an icecube environment to run this script!
 
@@ -19,28 +18,6 @@ parser.add_argument('--input', type=str, nargs='+', default=[defaultFile], help=
 args = parser.parse_args()
 
 #######################################
-
-#We define a filter "module" that will run on Q-Frames
-#This will only allow monte-carlo particles with an energy above
-#1 PeV to pass the filter and be processed by further frames.
-def MyQFrameFilter(frame):
-  print("MyQFrameFilter is running on a Q frame")
-
-  #If there is not MCPrimary in the frame, skip it
-  if not "MCPrimary" in frame:
-    print("  the event is rejected because there is no MC particle")
-    return False
-
-  primary = frame["MCPrimary"]
-
-  cut = primary.energy >= 1*I3Units.PeV
-
-  if not cut:
-    print("  the event is rejected because the MC energy is {0:0.3f} PeV".format(primary.energy/I3Units.PeV))
-    return False
-
-  return True
-
 
 #We define a very similar filter "module" that will run on P-Frames
 #This will only allow reconstructions with a zenith angle less than
@@ -66,10 +43,6 @@ def MyPFrameFilter(frame):
 
 
 #This isn't really a filter, it just lets us know when the filters were passed
-def EnergyAlertScript(frame):
-  print("This event passed the energy filter!")
-  print(frame["MCPrimary"])
-
 def ZenithAlertScript(frame):
   print("This event passed the zenith filter!")
   print(frame["Laputop"])
@@ -82,15 +55,6 @@ tray = I3Tray()
 
 #This is a pre-defined module which reads the I3 files that we use to store data
 tray.AddModule("I3Reader", "reader", FilenameList = args.input)
-
-
-#Add the Q filter as a module to the tray
-#Tell it to run only on the "DAQ" frames
-tray.Add(MyQFrameFilter, streams=[icetray.I3Frame.DAQ])
-
-#Add our alert script which will let us know when the filter passes
-tray.Add(EnergyAlertScript, streams=[icetray.I3Frame.DAQ])
-
 
 #Add the P filter as a module to the tray
 #Tell it to run only on the "Physics" frames
