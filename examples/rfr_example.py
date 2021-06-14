@@ -12,11 +12,11 @@ from sklearn.metrics import r2_score
 t00 = time.time()
 
 # -- set the file names
-hename = "../data/MonteCarlo_Helium.obj"
+hename = "../data/MonteCarlo_Proton.obj"
 dename = "../data/DetectorLocations.obj"
 
 # -- read in the data
-print("loading event and detector data...")
+print("loading event and detector data for {0}...".format(hename))
 hedat = pkl.load(open(hename, "rb"))
 dedat = pkl.load(open(dename, "rb"))
 
