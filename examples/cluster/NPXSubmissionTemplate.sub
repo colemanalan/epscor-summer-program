@@ -1,0 +1,14 @@
+#You will have to replace some of the values with the the locations that are relevant
+#for your machine
+#Submit a job using this script by running the following from the npx node
+#condor_submit NPXSubmissionTemplate.sub
+
+Executable = YOUR/PATH/TO/YOUR/ExampleSubmission.sh
+Error = YOUR/PATH/TO/YOUR/MyErrorOutput.err
+Output = YOUR/PATH/TO/YOUR/MyStandardOutput.out
+Log = /scratch/YOURNAMEHERE/npxoutput.log
+request_memory = 2GB
+
+Arguments= Test! 20
+
+Queue 1
