@@ -134,7 +134,7 @@ class PlotOneEvent(icetray.I3Module):
 
     #Make a new axis on which to plot the energies
     ax = fig.add_subplot(gs[1])
-    scat = ax.scatter(xPositions, yPositions, c=allTimes)
+    scat = ax.scatter(xPositions, yPositions, c=allTimes, cmap='plasma')
     cbar = fig.colorbar(scat)
     ax.scatter(notHitXPos, notHitYPos, color="gray", marker="x")
     ax.set_xlabel("East / m")
