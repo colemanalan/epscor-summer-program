@@ -29,8 +29,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument('input', type=str, nargs='+', default=[], help='Input data files.')
 parser.add_argument('--gcd', type=str, default="/cvmfs/icecube.opensciencegrid.org/data/GCD/GeoCalibDetectorStatus_IC86_Merged.i3.gz", help='GCD file for the event')
 parser.add_argument('--output', type=str, required=True, default="", help='Output pickle file')
-parser.add_argument('--nEvents', type=str,  default=10000, help='Number of events to read')
-parser.add_argument('--maxzen', type=str,  default=45, help='Maximum angle in deg')
+parser.add_argument('--nEvents', type=int,  default=10000, help='Number of events to read')
+parser.add_argument('--maxzen', type=float,  default=45, help='Maximum angle in deg')
 args = parser.parse_args()
 
 
@@ -64,27 +64,35 @@ class CrunchFiles(icetray.I3Module):
 
 
   def Physics(self,frame):
-    if frame["I3EventHeader"].sub_event_stream != "ice_top":
-      return
-
-    if "MCPrimary" in frame:
-      primary = frame["MCPrimary"]
-    elif "PolyplopiaPrimary" in frame:
-      primary = frame["PolyplopiaPrimary"]    
-    elif "I3MCTree_preMuonProp" in frame:
-      primary = frame["I3MCTree_preMuonProp"][0]
-    else:
-      log_fatal("I could not find a valid primary")
-
-    if primary.dir.zenith > args.maxzen * 3.141592653 / 180.:
-      return False
-
-    mcParticle = self.ConvertParticle(primary)
-
-
     evt = event.Event()
-    evt.SetPrimary(mcParticle)
 
+    if len(self.eventList) % 500 == 0:
+      print("{}/{}".format(len(self.eventList), args.nEvents))
+
+    if frame["I3EventHeader"].sub_event_stream == "ice_top":
+      if "MCPrimary" in frame:
+        primary = frame["MCPrimary"]
+      elif "PolyplopiaPrimary" in frame:
+        primary = frame["PolyplopiaPrimary"]    
+      elif "I3MCTree_preMuonProp" in frame:
+        primary = frame["I3MCTree_preMuonProp"][0]
+      else:
+        log_fatal("I could not find a valid primary")
+
+      if primary.dir.zenith > args.maxzen * 3.141592653 / 180.:
+        return False
+
+      mcParticle = self.ConvertParticle(primary)
+
+      evt.SetPrimary(mcParticle)
+
+    elif frame["I3EventHeader"].sub_event_stream == "IceTopSplit":
+      if "Laputop" in frame and frame["Laputop"].dir.zenith > args.maxzen * 3.141592653 / 180.:
+        return False
+
+    else:
+      print("Skipping", frame["I3EventHeader"].sub_event_stream)
+      return False
 
     for name in self.pulseNames:
       if not name in frame:
@@ -130,7 +138,7 @@ class CrunchFiles(icetray.I3Module):
 
     self.eventList.append(evt)
 
-    if len(self.eventList) == args.nEvents:
+    if len(self.eventList) >= args.nEvents:
       self.RequestSuspension()
 
     # print(evt)
