@@ -3,12 +3,12 @@
 #Submit a job using this script by running the following from the npx node
 #condor_submit NPXSubmissionTemplate.sub
 
-Executable = REPLACE_ME/ExampleSubmission.sh
+Executable = REPLACE_ME/ExampleMultiSubmission.sh
 Error = REPLACE_ME/log-files/MyErrorOutput_$(Process).err
 Output = REPLACE_ME/log-files/MyStandardOutput_$(Process).out
 Log = /scratch/YOURNAMEHERE/npxoutput_$(Process).log
 request_memory = 2GB
 
-Arguments= Test! Process
+Arguments= 12360 $(Process)
 
 Queue 5
