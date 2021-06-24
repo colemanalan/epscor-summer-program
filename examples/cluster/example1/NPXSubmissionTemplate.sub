@@ -4,11 +4,17 @@
 #condor_submit NPXSubmissionTemplate.sub
 
 Executable = REPLACE_ME/example1/ExampleSubmission.sh
+
 Error = REPLACE_ME/log-files/MyErrorOutput.err
 Output = REPLACE_ME/log-files/MyStandardOutput.out
 Log = /scratch/YOURNAMEHERE/npxoutput.log
+
 request_memory = 2GB
+
+request_cpus = 2
 
 Arguments= Test! 20
 
 Queue 1
+
+

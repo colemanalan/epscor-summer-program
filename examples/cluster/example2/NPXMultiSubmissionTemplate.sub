@@ -4,10 +4,14 @@
 #condor_submit NPXSubmissionTemplate.sub
 
 Executable = REPLACE_ME/example2/ExampleMultiSubmission.sh
+
 Error = REPLACE_ME/log-files/MyMultiErrorOutput_$(Process).err
 Output = REPLACE_ME/log-files/MyMultiStandardOutput_$(Process).out
 Log = /scratch/YOURNAMEHERE/npxmultioutput_$(Process).log
+
 request_memory = 2GB
+
+request_cpus = 2
 
 Arguments= 12360 $(Process)
 
